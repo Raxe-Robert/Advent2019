@@ -3,9 +3,17 @@
 
 #include <iostream>
 
+#include "shared/types.h"
+
+#include "day01.hpp"
+
 int main()
 {
-    std::cout << "Hello World!\n";
+	printf("Advent of Code 2018\n\n");
+
+	day01("./input/day01.txt");
+
+	return 0;
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
