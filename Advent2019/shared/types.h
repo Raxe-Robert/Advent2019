@@ -12,3 +12,5 @@ typedef double r64;
 typedef intptr_t intptr;
 typedef uintptr_t uintptr;
 typedef unsigned char uchar;
+
+constexpr s32 COMMA = 44;

@@ -1,6 +1,4 @@
 
-constexpr s32 COMMA = 44;
-
 void day02(const char* filepath)
 {
 	auto file = fopen(filepath, "rb");

@@ -27,6 +27,7 @@ void day01(const char* filepath)
 			part2 += num;
 		}
 	}
+
 	printf("[Day01][1] %i\n", part1);
 	printf("[Day01][2] %i\n", part2);
 }
