@@ -6,12 +6,14 @@
 #include "shared/types.h"
 
 #include "day01.hpp"
+#include "day02.hpp"
 
 int main()
 {
 	printf("Advent of Code 2018\n\n");
 
 	day01("./input/day01.txt");
+	day02("./input/day02.txt");
 
 	return 0;
 }

@@ -26,8 +26,13 @@
     <ClInclude Include="shared\types.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="day02.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="input\day01.txt" />
+    <Text Include="input\day01test.txt" />
+    <Text Include="input\day02.txt" />
   </ItemGroup>
 </Project>

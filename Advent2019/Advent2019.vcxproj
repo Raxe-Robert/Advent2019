@@ -151,10 +151,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="day01.hpp" />
+    <ClInclude Include="day02.hpp" />
     <ClInclude Include="shared\types.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="input\day01.txt" />
+    <Text Include="input\day01test.txt" />
+    <Text Include="input\day02.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
