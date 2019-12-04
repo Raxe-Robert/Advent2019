@@ -36,31 +36,71 @@ void day02(const char* filepath)
 
 	}
 
-	// before running the program, replace position 1 with the value 12 and replace position 2 with the value 2.
-	arr[1] = 12;
-	arr[2] = 2;
+	s32* arr_copy;
+	arr_copy = reinterpret_cast<s32*>(malloc(sizeof(s32) * 1024 * 1024));
+	memset(arr_copy + sizeof(s32) * 1024, 0, sizeof(s32) * 1024);
+	memcpy(arr_copy, arr, sizeof(s32) * 1024);
+
+	// "before running the program, replace position 1 with the value 12 and replace position 2 with the value 2."
+	arr_copy[1] = 12;
+	arr_copy[2] = 2;
 
 	for (auto i = 0; i < arr_length; i += 4)
 	{
-		auto method = arr[i];
+		auto method = arr_copy[i];
 		if (method == 99)
+		{
+			printf("[Day02][1] %i\n", arr_copy[0]);
 			break;
+		}
 
-		auto valPos = arr[i + 1];
-		auto valPos2 = arr[i + 2];
-		auto outputPos = arr[i + 3];
+		auto valPos = arr_copy[i + 1];
+		auto valPos2 = arr_copy[i + 2];
+		auto outputPos = arr_copy[i + 3];
 
-		auto val = arr[valPos];
-		auto val2 = arr[valPos2];
+		auto val = arr_copy[valPos];
+		auto val2 = arr_copy[valPos2];
 
 		if (method == 1)
-			arr[outputPos] = val + val2;
+			arr_copy[outputPos] = val + val2;
 		else if (method == 2)
-			arr[outputPos] = val * val2;
+			arr_copy[outputPos] = val * val2;
 	}
 
-	s32 part2 = 0;
+	for (auto noun = 0; noun < 100; noun++)
+	for (auto verb = 0; verb < 100; verb++)
+	{
+		memset(arr_copy + sizeof(s32) * 1024, 0, sizeof(s32) * 1024);
+		memcpy(arr_copy, arr, sizeof(s32) * 1024);
 
-	printf("[Day02][1] %i\n", arr[0]);
-	printf("[Day02][2] %i\n", part2);
+		arr_copy[1] = noun;
+		arr_copy[2] = verb;
+
+		for (auto i = 0; i < arr_length; i += 4)
+		{
+			auto method = arr_copy[i];
+			if (method == 99)
+			{
+				if (arr_copy[0] == 19690720)
+				{
+					printf("[Day02][2] %i\n", 100 * noun + verb);
+					return;
+				}
+
+				break;
+			}
+
+			auto valPos = arr_copy[i + 1];
+			auto valPos2 = arr_copy[i + 2];
+			auto outputPos = arr_copy[i + 3];
+
+			auto val = arr_copy[valPos];
+			auto val2 = arr_copy[valPos2];
+
+			if (method == 1)
+				arr_copy[outputPos] = val + val2;
+			else if (method == 2)
+				arr_copy[outputPos] = val * val2;
+		}
+	}
 }
