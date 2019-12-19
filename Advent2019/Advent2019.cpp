@@ -12,7 +12,7 @@
 
 int main()
 {
-	printf("Advent of Code 2018\n\n");
+	printf("Advent of Code 2019\n\n");
 
 	day01("./input/day01.txt");
 	day02("./input/day02.txt");

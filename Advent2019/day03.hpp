@@ -1,159 +1,260 @@
-union Point
+struct Point
 {
-	struct
-	{
-		s32 x;
-		s32 y;
+	s32 x;
+	s32 y;
+};
 
-		bool wire1Visited;
-		bool wire2Visited;
+struct Segment
+{
+	union
+	{
+		Point start;
+		struct
+		{
+			s32 x;
+			s32 y;
+		};
+	};
+
+	union
+	{
+		Point end;
+		struct
+		{
+			s32 z;
+			s32 w;
+		};
 	};
 };
 
-Point* findPoint(Point* arr, s32 arr_size, s32 x, s32 y)
+inline s32
+absolute(s32 val)
 {
-	for (auto i = 0; i < arr_size; i++)
-	{
-		auto ref = &arr[i];
-		if (ref->x == x && ref->y == y)
-			return ref;
-	}
-
-	return 0;
+	return val < 0 ? -val : val;
 }
+
+inline bool
+inRange(s32 min, s32 max, s32 val)
+{
+	return val >= min && val <= max;
+}
+
+
+inline char*
+ReadAllText(const char* path, s32* length)
+{
+	FILE* file = fopen(path, "rb");
+
+	s32 size;
+	fseek(file, 0, SEEK_END);
+	size = ftell(file);
+	fseek(file, 0, SEEK_SET);
+
+	auto buffer = malloc(size + 1);
+	fread(buffer, 1, size, file);
+	fclose(file);
+
+	auto result = reinterpret_cast<char*>(buffer);
+	result[size] = 0;
+	*length = size;
+	return result;
+}
+
+
+
 
 void day03(const char* filepath)
 {
-	auto file = fopen(filepath, "rb");
+	s32 length;
+	auto text = ReadAllText(filepath, &length);
 
-	char direction;
-	char* amount = new char[4]{ 0, 0, 0, '\0' };
-	s32 amount_length = 0;
+	auto segments = reinterpret_cast<Segment*>(malloc(sizeof(Segment) * 1024));
+	s32 segments_length = 0;
 	
-	int wireId = 1;
-	s32 x = 0, y = 0;
+	char* amount = new char[4] { 0, 0, 0, '\0' };
 
-	Point* points;
-	points = reinterpret_cast<Point*>(malloc(sizeof(Point) * 1024 * 1024));
-	memset(points, 0, sizeof(Point) * 1024 * 1024);
-	s32 points_length = 0;
+	Point previous { 0, 0 };
 
-	while (1)
+	// First wire
+	auto firstLine = true;
+	auto i = 0;
+	for (; firstLine; ++i)
 	{
-		s32 c = fgetc(file);
-
-		if (c >= 48 && c <= 57)
+		Point current = previous;
+		for (auto j = i; j < length; ++j)
 		{
-			amount[amount_length] = (char)c;
-			amount_length++;
-		}
-		else if (c >= 'A' && c <= 'Z')
-		{
-			direction = (char)c;
-		}
-		else if (c == COMMA || c == EOF || c == '\n')
-		{
-			s32 num = atoi(amount);
-
-			s32 startX = x;
-			s32 startY = y;
-			
-			s32 xTranslationAbs = 0;
-			s32 yTranslationAbs = 0;
-
-			switch (direction)
+			auto c = text[j];
+			if (c == '\n' || c == '\r' || c == ',')
 			{
-				case 'L': 
-					x -= num;
-					xTranslationAbs = num;
-					break;
-				case 'R': 
-					x += num;
-					xTranslationAbs = num;
-					break;
-				case 'U': 
-					y += num;
-					yTranslationAbs = num;
-					break;
-				case 'D': 
-					y -= num; 
-					yTranslationAbs = num;
-					break;
-			}
-
-
-			for (auto col = 0; col <= xTranslationAbs; col++)
-			for (auto row = 0; row <= yTranslationAbs; row++)
-			{
-				auto moveX = startX;
-				if (startX < x)
-					moveX += col;
-				else
-					moveX -= col;
-
-				auto moveY = startY;
-				if (startY < y)
-					moveY += row;
-				else
-					moveY -= row;
-
-				auto point = findPoint(points, points_length, moveX, moveY);
-
-				if (point != 0)
+				if (c == '\n')
 				{
-					if (wireId == 1)
-						point->wire1Visited = true;
-					else if (wireId == 2)
-						point->wire2Visited = true;
+					firstLine = false;
+					break;
 				}
-				else
+
+				auto dir = text[i];
+
+				memset(amount, 0, 3);
+				memcpy(amount, &text[i + 1], (size_t)j - i);
+
+				auto val = atoi(amount);
+
+				auto segment = &segments[segments_length];
+				segments_length++;
+
+				switch (dir)
 				{
-					auto ref = &points[points_length];
-					points_length++;
+					case 'L': 
+						current.x = previous.x - val;
 
-					ref->x = moveX;
-					ref->y = moveY;
+						segment->start = current;
+						segment->end = previous;
+						break;
+					case 'R': 
+						current.x = previous.x + val;
 
-					if (wireId == 1)
-						ref->wire1Visited = true;
-					else if (wireId == 2)
-						ref->wire2Visited = true;
+						segment->start = previous;
+						segment->end = current;
+						break;
+					case 'U': 
+						current.y = previous.y + val;
+
+						segment->start = previous;
+						segment->end = current;
+						break;
+					case 'D': 
+						current.y = previous.y - val; 
+
+						segment->start = current;
+						segment->end = previous;
+						break;
 				}
-			}
 
-			memset(amount, 0, amount_length);
-			amount_length = 0;
-
-			direction = 0;
-
-			if (c == '\n')
-			{
-				wireId++;
-				x = 0;
-				y = 0;
-			}
-
-			if (c == EOF)
+				previous = current;
+				i = j;
 				break;
+			}
 		}
 	}
 
-	for (auto i = 0; i < points_length; i++)
+	// Second wire
+	previous = { 0, 0 };
+	for (; i < length; i++)
 	{
-		auto ref = &points[i];
-		if (ref->wire1Visited && ref->wire2Visited)
+		Point current = previous;
+		for (auto j = i; j < length; ++j)
 		{
-			s32 xBit31 = ref->x >> 31;
-			s32 xAbs = (ref->x ^ xBit31) - xBit31;
+			auto c = text[j];
+			if (j == length - 1 || c == ',')
+			{
+				auto dir = text[i];
 
-			s32 yBit31 = ref->y >> 31;
-			s32 yAbs = (ref->y ^ yBit31) - yBit31;
+				memset(amount, 0, 3);
+				memcpy(amount, &text[i + 1], (size_t)j - i);
 
-			auto distance = xAbs + yAbs;
-			printf("yes, distance: %i \n", distance);
+				auto val = atoi(amount);
+
+				auto segment = &segments[segments_length];
+
+				switch (dir)
+				{
+					case 'L': 
+						current.x = previous.x - val; 
+
+						segment->start = current;
+						segment->end = previous;
+						break;
+					case 'R': 
+						current.x = previous.x + val; 
+
+						segment->start = previous;
+						segment->end = current;
+						break;
+					case 'U': 
+						current.y = previous.y + val; 
+
+						segment->start = previous;
+						segment->end = current;
+						break;
+					case 'D': 
+						current.y = previous.y - val; 
+
+						segment->start = current;
+						segment->end = previous;
+						break;
+				}
+
+				auto horizontal0 = segment->start.x == segment->end.x;
+
+				// Compare against all other segments
+				for (auto k = 0; k < segments_length; k++)
+				{
+					auto segment1 = &segments[k];
+					auto horizontal1 = segment1->start.x == segment1->end.x;
+
+					// if both horizontal
+					if (horizontal0 && horizontal1)
+					{
+						// when not on the same x they are not overlapping
+						if (segment->start.x != segment1->start.x)
+							continue;
+						
+						if (inRange(segment1->start.y, segment1->end.y, segment->start.y)
+							&& inRange(segment1->start.y, segment1->end.y, segment->end.y)
+							&& inRange(segment->start.y, segment->end.y, segment1->start.y)
+							&& inRange(segment->start.y, segment->end.y, segment1->end.y))
+						{
+							Point intersection;
+							intersection.x = 0;
+							intersection.y = 0;
+
+							printf("intersection a: %i\n", absolute(intersection.x) + absolute(intersection.y));
+							break;
+						}
+					}
+					// if both vertical
+					else if (!horizontal0 && !horizontal1)
+					{
+						if (segment->start.y != segment1->start.y)
+							continue;
+
+						if (inRange(segment1->start.x, segment1->end.x, segment->start.x)
+							&& inRange(segment1->start.x, segment1->end.x, segment->end.x)
+							&& inRange(segment->start.x, segment->end.x, segment1->start.x)
+							&& inRange(segment->start.x, segment->end.x, segment1->end.x))
+						{
+							Point intersection;
+							intersection.x = 0;
+							intersection.y = 0;
+
+							printf("intersection b: %i\n", absolute(intersection.x) + absolute(intersection.y));
+							break;
+						}
+					}
+					else
+					{
+						Segment* horizontal = horizontal0 ? segment : segment1;
+						Segment* vertical = !horizontal0 ? segment : segment1;
+
+						bool bool1 = inRange(vertical->start.x, vertical->end.x, horizontal->x);
+						bool bool2 = inRange(horizontal->start.y, horizontal->end.y, vertical->y);
+
+						if (absolute(horizontal->x) + absolute(vertical->y) == 375)
+							printf("intersection c: %i\n", absolute(horizontal->x) + absolute(vertical->y));
+
+						if (bool1 && bool2)
+						{
+							printf("intersection c: %i\n", absolute(horizontal->x) + absolute(vertical->y));
+							break;
+						}
+					}
+				}
+
+				previous = current;
+				i = j;
+				break;
+			}
 		}
 	}
-
-	delete amount;
-	delete points;
+	free(segments);
 }

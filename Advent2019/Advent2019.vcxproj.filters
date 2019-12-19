@@ -38,5 +38,6 @@
     <Text Include="input\day01test.txt" />
     <Text Include="input\day02.txt" />
     <Text Include="input\day03.txt" />
+    <Text Include="input\test.txt" />
   </ItemGroup>
 </Project>
