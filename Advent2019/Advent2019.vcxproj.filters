@@ -38,6 +38,12 @@
     <ClInclude Include="advent2019.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="shared\string.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="shared\memory.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="input\day01.txt" />

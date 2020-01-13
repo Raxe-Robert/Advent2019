@@ -1,9 +1,8 @@
-inline char*
-ReadAllText(const char* path, s32* length)
+inline string
+ReadAllText(const char* path)
 {
 	FILE* file = fopen(path, "rb");
-	if (file == NULL)
-		return NULL;
+	assert(file);
 
 	s32 size;
 	fseek(file, 0, SEEK_END);
@@ -14,8 +13,11 @@ ReadAllText(const char* path, s32* length)
 	fread(buffer, 1, size, file);
 	fclose(file);
 
-	auto result = reinterpret_cast<char*>(buffer);
-	result[size] = 0;
-	*length = size;
+	string result;
+	result.VData = buffer;
+	result.Data[size] = 0;
+	result.Length = size;
+	result.Capacity = size + 1;
+
 	return result;
 }

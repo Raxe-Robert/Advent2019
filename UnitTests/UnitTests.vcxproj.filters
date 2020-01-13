@@ -18,11 +18,11 @@
     <ClCompile Include="shared\fileTests.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="day01Tests.cpp">
+    <ClCompile Include="day03Tests.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="input\day01test.txt" />
+    <Text Include="input\day03test.txt" />
   </ItemGroup>
 </Project>

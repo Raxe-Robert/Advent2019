@@ -6,13 +6,15 @@ using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 namespace UnitTests
 {
-	TEST_CLASS(day01Tests)
+	TEST_CLASS(day03Tests)
 	{
 	public:
 		
 		TEST_METHOD(testData)
 		{
-			day01("./input/day01test01.txt");
+			auto day03_test_input = ReadAllText("./input/day03test.txt");
+			day03(day03_test_input);
+
 			Assert::AreEqual(1, 1);
 		}
 	};

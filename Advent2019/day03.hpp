@@ -39,11 +39,8 @@ inRange(s32 min, s32 max, s32 val)
 	return val >= min && val <= max;
 }
 
-void day03(const char* filepath)
+void day03(string input)
 {
-	s32 length;
-	auto text = ReadAllText(filepath, &length);
-
 	auto segments = reinterpret_cast<Segment*>(malloc(sizeof(Segment) * 1024));
 	s32 segments_length = 0;
 	
@@ -57,9 +54,9 @@ void day03(const char* filepath)
 	for (; firstLine; ++i)
 	{
 		Point current = previous;
-		for (auto j = i; j < length; ++j)
+		for (auto j = i; j < input.Length; ++j)
 		{
-			auto c = text[j];
+			auto c = input[j];
 			if (c == '\n' || c == '\r' || c == ',')
 			{
 				if (c == '\n')
@@ -68,10 +65,10 @@ void day03(const char* filepath)
 					break;
 				}
 
-				auto dir = text[i];
+				auto dir = input[i];
 
 				memset(amount, 0, 3);
-				memcpy(amount, &text[i + 1], (size_t)j - i);
+				memcpy(amount, &input[i + 1], (size_t)j - i);
 
 				auto val = atoi(amount);
 
@@ -119,18 +116,18 @@ void day03(const char* filepath)
 
 	// Second wire
 	previous = { 0, 0 };
-	for (; i < length; i++)
+	for (; i < input.Length; i++)
 	{
 		Point current = previous;
-		for (auto j = i; j < length; ++j)
+		for (auto j = i; j < input.Length; ++j)
 		{
-			auto c = text[j];
-			if (j == length - 1 || c == ',')
+			auto c = input[j];
+			if (j == input.Length - 1 || c == ',')
 			{
-				auto dir = text[i];
+				auto dir = input[i];
 
 				memset(amount, 0, 3);
-				memcpy(amount, &text[i + 1], (size_t)j - i);
+				memcpy(amount, &input[i + 1], (size_t)j - i);
 
 
 

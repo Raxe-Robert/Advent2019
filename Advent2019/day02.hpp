@@ -1,10 +1,6 @@
 
-void day02(const char* filepath)
+void day02(string input)
 {
-	auto file = fopen(filepath, "rb");
-	if (file == NULL)
-		return;
-
 	char* buffer = new char[4]{ 0, 0, 0, '\0' };
 	s32 buffer_length = 0;
 
@@ -12,9 +8,9 @@ void day02(const char* filepath)
 	arr = reinterpret_cast<s32*>(malloc(sizeof(s32) * 1024));
 	s32 arr_length = 0;
 
-	while (1)
+	for (s32 i = 0; i < input.Length; i++)
 	{
-		s32 c = fgetc(file);
+		s32 c = input[i];
 		if (c == COMMA || c == EOF)
 		{
 			s32 num = atoi(buffer);

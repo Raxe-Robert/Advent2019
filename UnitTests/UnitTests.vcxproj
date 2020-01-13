@@ -156,7 +156,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="day01Tests.cpp" />
+    <ClCompile Include="day03Tests.cpp" />
     <ClCompile Include="shared\fileTests.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -166,7 +166,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="input\day01test.txt" />
+    <Text Include="input\day03test.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
