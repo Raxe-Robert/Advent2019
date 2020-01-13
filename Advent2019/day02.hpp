@@ -2,6 +2,8 @@
 void day02(const char* filepath)
 {
 	auto file = fopen(filepath, "rb");
+	if (file == NULL)
+		return;
 
 	char* buffer = new char[4]{ 0, 0, 0, '\0' };
 	s32 buffer_length = 0;

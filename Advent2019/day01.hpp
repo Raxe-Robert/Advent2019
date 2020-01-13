@@ -1,7 +1,10 @@
 
 void day01(const char* filepath)
 {
-	auto file = fopen(filepath, "rb");
+	auto file = fopen(filepath, "r");
+	if (file == NULL)
+		return;
+	
 	auto buffer = new char[64];
 
 	s32 part1 = 0;

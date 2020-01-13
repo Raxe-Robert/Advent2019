@@ -1,14 +1,7 @@
 // Advent2019.cpp : This file contains the 'main' function. Program execution begins and ends there.
 //
 
-#include <iostream>
-#include <vector>
-
-#include "shared/types.h"
-
-#include "day01.hpp"
-#include "day02.hpp"
-#include "day03.hpp"
+#include "advent2019.h"
 
 int main()
 {

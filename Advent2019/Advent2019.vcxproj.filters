@@ -32,12 +32,17 @@
     <ClInclude Include="day03.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="shared\file.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="advent2019.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="input\day01.txt" />
     <Text Include="input\day01test.txt" />
     <Text Include="input\day02.txt" />
     <Text Include="input\day03.txt" />
-    <Text Include="input\test.txt" />
   </ItemGroup>
 </Project>

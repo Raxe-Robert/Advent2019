@@ -39,30 +39,6 @@ inRange(s32 min, s32 max, s32 val)
 	return val >= min && val <= max;
 }
 
-
-inline char*
-ReadAllText(const char* path, s32* length)
-{
-	FILE* file = fopen(path, "rb");
-
-	s32 size;
-	fseek(file, 0, SEEK_END);
-	size = ftell(file);
-	fseek(file, 0, SEEK_SET);
-
-	auto buffer = malloc(size + 1);
-	fread(buffer, 1, size, file);
-	fclose(file);
-
-	auto result = reinterpret_cast<char*>(buffer);
-	result[size] = 0;
-	*length = size;
-	return result;
-}
-
-
-
-
 void day03(const char* filepath)
 {
 	s32 length;
@@ -102,6 +78,8 @@ void day03(const char* filepath)
 				auto segment = &segments[segments_length];
 				segments_length++;
 
+				printf("%i, %i\n", previous.x, previous.y);
+
 				switch (dir)
 				{
 					case 'L': 
@@ -137,6 +115,8 @@ void day03(const char* filepath)
 		}
 	}
 
+	printf("---------------\n\n\n");
+
 	// Second wire
 	previous = { 0, 0 };
 	for (; i < length; i++)
@@ -152,39 +132,43 @@ void day03(const char* filepath)
 				memset(amount, 0, 3);
 				memcpy(amount, &text[i + 1], (size_t)j - i);
 
+
+
 				auto val = atoi(amount);
 
-				auto segment = &segments[segments_length];
+				auto segment0 = &segments[segments_length];
 
 				switch (dir)
 				{
 					case 'L': 
 						current.x = previous.x - val; 
 
-						segment->start = current;
-						segment->end = previous;
+						segment0->start = current;
+						segment0->end = previous;
 						break;
 					case 'R': 
 						current.x = previous.x + val; 
 
-						segment->start = previous;
-						segment->end = current;
+						segment0->start = previous;
+						segment0->end = current;
 						break;
 					case 'U': 
 						current.y = previous.y + val; 
 
-						segment->start = previous;
-						segment->end = current;
+						segment0->start = previous;
+						segment0->end = current;
 						break;
 					case 'D': 
 						current.y = previous.y - val; 
 
-						segment->start = current;
-						segment->end = previous;
+						segment0->start = current;
+						segment0->end = previous;
 						break;
 				}
+				//printf("\naction: %c%i\n", dir, val);
+				printf("%i, %i\n", previous.x, previous.y);
 
-				auto horizontal0 = segment->start.x == segment->end.x;
+				auto horizontal0 = segment0->start.x == segment0->end.x;
 
 				// Compare against all other segments
 				for (auto k = 0; k < segments_length; k++)
@@ -196,13 +180,13 @@ void day03(const char* filepath)
 					if (horizontal0 && horizontal1)
 					{
 						// when not on the same x they are not overlapping
-						if (segment->start.x != segment1->start.x)
+						if (segment0->start.x != segment1->start.x)
 							continue;
 						
-						if (inRange(segment1->start.y, segment1->end.y, segment->start.y)
-							&& inRange(segment1->start.y, segment1->end.y, segment->end.y)
-							&& inRange(segment->start.y, segment->end.y, segment1->start.y)
-							&& inRange(segment->start.y, segment->end.y, segment1->end.y))
+						if (inRange(segment1->start.y, segment1->end.y, segment0->start.y)
+							&& inRange(segment1->start.y, segment1->end.y, segment0->end.y)
+							&& inRange(segment0->start.y, segment0->end.y, segment1->start.y)
+							&& inRange(segment0->start.y, segment0->end.y, segment1->end.y))
 						{
 							Point intersection;
 							intersection.x = 0;
@@ -215,34 +199,34 @@ void day03(const char* filepath)
 					// if both vertical
 					else if (!horizontal0 && !horizontal1)
 					{
-						if (segment->start.y != segment1->start.y)
+						if (segment0->start.y != segment1->start.y)
 							continue;
 
-						if (inRange(segment1->start.x, segment1->end.x, segment->start.x)
-							&& inRange(segment1->start.x, segment1->end.x, segment->end.x)
-							&& inRange(segment->start.x, segment->end.x, segment1->start.x)
-							&& inRange(segment->start.x, segment->end.x, segment1->end.x))
+						if (inRange(segment1->start.x, segment1->end.x, segment0->start.x)
+							&& inRange(segment1->start.x, segment1->end.x, segment0->end.x)
+							&& inRange(segment0->start.x, segment0->end.x, segment1->start.x)
+							&& inRange(segment0->start.x, segment0->end.x, segment1->end.x))
 						{
 							Point intersection;
 							intersection.x = 0;
 							intersection.y = 0;
 
-							printf("intersection b: %i\n", absolute(intersection.x) + absolute(intersection.y));
+							//printf("intersection b: %i\n", absolute(intersection.x) + absolute(intersection.y));
 							break;
 						}
 					}
 					else
 					{
-						Segment* horizontal = horizontal0 ? segment : segment1;
-						Segment* vertical = !horizontal0 ? segment : segment1;
+						Segment* horizontal = horizontal0 ? segment0 : segment1;
+						Segment* vertical = !horizontal0 ? segment0 : segment1;
 
-						bool bool1 = inRange(vertical->start.x, vertical->end.x, horizontal->x);
-						bool bool2 = inRange(horizontal->start.y, horizontal->end.y, vertical->y);
+						bool xInRange = inRange(vertical->start.x, vertical->end.x, horizontal->x);
+						bool yInRange = inRange(horizontal->start.y, horizontal->end.y, vertical->y);
 
-						if (absolute(horizontal->x) + absolute(vertical->y) == 375)
-							printf("intersection c: %i\n", absolute(horizontal->x) + absolute(vertical->y));
+						//if (absolute(horizontal->x) + absolute(vertical->y) == 375)
+						//	printf("intersection c: %i\n", absolute(horizontal->x) + absolute(vertical->y));
 
-						if (bool1 && bool2)
+						if (xInRange && yInRange)
 						{
 							printf("intersection c: %i\n", absolute(horizontal->x) + absolute(vertical->y));
 							break;
