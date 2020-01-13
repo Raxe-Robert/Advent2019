@@ -23,6 +23,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="input\day03testdata.txt" />
+    <Text Include="input\day03\part1\test01.txt" />
+    <Text Include="input\day03\part1\test02.txt" />
   </ItemGroup>
 </Project>

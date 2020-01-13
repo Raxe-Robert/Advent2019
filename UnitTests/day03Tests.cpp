@@ -10,10 +10,18 @@ namespace UnitTests
 	{
 	public:
 		
-		TEST_METHOD(testData)
+		TEST_METHOD(part1_test01)
 		{
-			auto day03_testdata = ReadAllText(PROJECT_DIR "input\\day03testdata.txt");
-			day03(day03_testdata);
+			auto test01 = ReadAllText(PROJECT_DIR "input\\day03\\part1\\test01.txt");
+			day03(test01);
+
+			Assert::AreEqual(1, 1);
+		}
+
+		TEST_METHOD(part1_test02)
+		{
+			auto test02 = ReadAllText(PROJECT_DIR "input\\day03\\part1\\test02.txt");
+			day03(test02);
 
 			Assert::AreEqual(1, 1);
 		}

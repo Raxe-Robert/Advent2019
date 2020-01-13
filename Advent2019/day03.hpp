@@ -2,6 +2,8 @@ struct Point
 {
 	s32 x;
 	s32 y;
+
+	s32 steps;
 };
 
 struct Segment
@@ -13,6 +15,8 @@ struct Segment
 		{
 			s32 x;
 			s32 y;
+
+			s32 steps;
 		};
 	};
 
@@ -23,6 +27,8 @@ struct Segment
 		{
 			s32 z;
 			s32 w;
+
+			s32 steps;
 		};
 	};
 };
@@ -45,56 +51,35 @@ compareSegment(Segment* l, Segment* r)
 	auto lHor = l->start.y == l->end.y;
 	auto rHor = r->start.y == r->end.y;
 	
-	if (lHor && rHor)
+	// lHor && rHor 
+	// !lHor && !rHor 
+	// Do not occur
+
+	Segment* hor = lHor ? l : r;
+	Segment* ver = !lHor ? l : r;
+
+	bool xInRange = inRange(hor->start.x, hor->end.x, ver->x);
+	bool yInRange = inRange(ver->start.y, ver->end.y, hor->y);
+
+	if (xInRange && yInRange)
 	{
-		// when not on the same x they are not overlapping
-		if (l->start.x != r->start.x)
-			return false;
+		printf("Manhattan Distance: %i\n", absolute(ver->x) + absolute(hor->y));
 
-		if (inRange(r->start.y, r->end.y, l->start.y)
-			&& inRange(r->start.y, r->end.y, l->end.y)
-			&& inRange(l->start.y, l->end.y, r->start.y)
-			&& inRange(l->start.y, l->end.y, r->end.y))
-		{
-			Point intersection;
-			intersection.x = 0;
-			intersection.y = 0;
+		auto lFirst = l->start.steps < l->end.steps ? l->start : l->end;
+		auto lSteps = lFirst.steps + absolute(lFirst.y - r->y);
+		printf("[l] steps: %i\n", lFirst.steps);
+		printf("[l] intersection: %i, first: %i, difference: %i\n", r->y, lFirst.y, absolute(lFirst.y - r->y));
+		printf("[l] accumulated steps: %i\n", lSteps);
 
-			printf("intersection a: %i\n", absolute(intersection.x) + absolute(intersection.y));
-			return true;
-		}
-	}
-	else if (!lHor && !rHor)
-	{
-		if (l->start.y != r->start.y)
-			return false;
+		auto rFirst = r->start.steps < r->end.steps ? r->start : r->end;
+		auto rSteps = rFirst.steps + absolute(rFirst.x - l->x);
+		printf("[r] steps: %i\n", rFirst.steps);
+		printf("[r] intersection: %i, first: %i, difference: %i\n", l->x, rFirst.x, absolute(rFirst.x - l->x));
+		printf("[r] accumulated steps: %i\n", rSteps);
 
-		if (inRange(r->start.x, r->end.x, l->start.x)
-			&& inRange(r->start.x, r->end.x, l->end.x)
-			&& inRange(l->start.x, l->end.x, r->start.x)
-			&& inRange(l->start.x, l->end.x, r->end.x))
-		{
-			Point intersection;
-			intersection.x = 0;
-			intersection.y = 0;
+		printf("Total steps: %i\n\n", lSteps + rSteps);
 
-			printf("intersection b: %i\n", absolute(intersection.x) + absolute(intersection.y));
-			return true;
-		}
-	}
-	else
-	{
-		Segment* hor = lHor ? l : r;
-		Segment* ver = !lHor ? l : r;
-
-		bool xInRange = inRange(hor->start.x, hor->end.x, ver->x);
-		bool yInRange = inRange(ver->start.y, ver->end.y, hor->y);
-
-		if (xInRange && yInRange)
-		{
-			printf("intersection c: %i\n", absolute(ver->x) + absolute(hor->y));
-			return true;
-		}
+		return true;
 	}
 
 	return false;
@@ -112,6 +97,8 @@ void day03(string input)
 	// First wire
 	auto firstLine = true;
 	auto i = 0;
+	auto steps = 0;
+
 	for (; firstLine; ++i)
 	{
 		Point current = previous;
@@ -132,8 +119,10 @@ void day03(string input)
 				memcpy(amount, &input[i + 1], (size_t)j - i);
 
 				auto val = atoi(amount);
+				steps += val;
+				current.steps = steps;
 
-				auto* segment = &segments[segments_length];
+				auto segment = &segments[segments_length];
 				segments_length++;
 
 				switch (dir)
@@ -171,11 +160,11 @@ void day03(string input)
 		}
 	}
 
-	printf("---------------\n\n\n");
+	printf("---------------\n");
 
 	// Second wire
 	previous = { 0, 0 };
-	for (; i < input.Length; i++)
+	for (; i < input.Length; ++i)
 	{
 		Point current = previous;
 		for (auto j = i; j < input.Length; ++j)
@@ -189,6 +178,8 @@ void day03(string input)
 				memcpy(amount, &input[i + 1], (size_t)j - i);
 
 				auto val = atoi(amount);
+				steps += val;
+				current.steps = steps;
 
 				auto segment = &segments[segments_length];
 
