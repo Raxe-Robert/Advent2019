@@ -3,7 +3,7 @@ String()
 {
 	string result;
 	result.Length = 0;
-	result.Data = reinterpret_cast<uchar*>(malloc(8));
+	result.Data = reinterpret_cast<char*>(malloc(8));
 	result.Data[0] = '\0';
 	result.Capacity = 8;
 
@@ -13,12 +13,10 @@ String()
 inline string
 String(const char* s)
 {
-	assert(s);
-
 	string result;
-	result.Length = strlen(s);
+	result.Length = (s32)strlen(s);
 	result.Capacity = result.Length + 1;
-	result.Data = reinterpret_cast<uchar*>(malloc(result.Capacity));
+	result.Data = reinterpret_cast<char*>(malloc(result.Capacity));
 	memcpy(result.Data, s, result.Capacity);
 
 	return result;
@@ -27,12 +25,10 @@ String(const char* s)
 inline string
 String(const char* s, s32 length)
 {
-	assert(s);
-
 	string result;
 	result.Length = length;
 	result.Capacity = result.Length + 1;
-	result.Data = reinterpret_cast<uchar*>(malloc(result.Capacity));
+	result.Data = reinterpret_cast<char*>(malloc(result.Capacity));
 	memcpy(result.Data, s, result.Length);
 	result.Data[result.Length] = 0;
 	

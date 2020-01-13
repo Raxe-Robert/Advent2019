@@ -15,31 +15,23 @@ typedef unsigned char uchar;
 
 constexpr s32 COMMA = 44;
 
-#define CRASH *(int*)0=0;
-
-#if _DEBUG
-#define assert(expr) if (!(expr)) { fprintf(stderr, "FAILED assertion [" __FILE__ ":%i] " #expr "\n", __LINE__);  CRASH; }
-#else
-#define assert(expr)
-#endif
-
 struct string
 {
 	union
 	{
-		uchar* Data;
+		char* Data;
 		u8* UData;
-		char* SData;
 		void* VData;
 	};
 
 	s32 Length;
 	s32 Capacity;
 
-	inline uchar& operator [] (s32 i)
+	inline char& operator [] (s32 i)
 	{
-		assert(i >= 0);
-		assert(i < this->Capacity);
+		if (i < 0 || i > this->Capacity)
+			throw std::invalid_argument("Index out of range");
+
 		return this->Data[i];
 	}
 };

@@ -12,8 +12,8 @@ void day01(string input)
 		s32 start = i;
 		memset(buffer, 0, 16);
 
-		while (input.SData[i] != '\n' && input.SData[i] != '\0')
-			*ptr++ = input.SData[i++];
+		while (input[i] != '\n' && input[i] != '\0')
+			*ptr++ = input[i++];
 		
 		ptr = buffer;
 

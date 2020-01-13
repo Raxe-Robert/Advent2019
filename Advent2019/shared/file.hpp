@@ -2,14 +2,15 @@ inline string
 ReadAllText(const char* path)
 {
 	FILE* file = fopen(path, "rb");
-	assert(file);
+	if (file == NULL)
+		return string();
 
 	s32 size;
 	fseek(file, 0, SEEK_END);
 	size = ftell(file);
 	fseek(file, 0, SEEK_SET);
 
-	auto buffer = malloc(size + 1);
+	auto buffer = malloc(size + (s32)1);
 	fread(buffer, 1, size, file);
 	fclose(file);
 
