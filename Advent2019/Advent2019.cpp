@@ -16,8 +16,8 @@ int main()
 	auto input_day03 = ReadAllText("./input/day03.txt");
 	day03(input_day03);
 
-	s32 day04_lower = 168630;
-	s32 day04_upper = 718098;
+	string day04_lower = String("168630", 6);
+	string day04_upper = String("718098", 6);
 	day04(day04_lower, day04_upper);
 
 	return 0;

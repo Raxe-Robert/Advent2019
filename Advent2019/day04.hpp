@@ -1,44 +1,50 @@
-
-void day04(s32 lower, s32 upper)
+struct byteArr
 {
-	s32 part1 = 0;
-	s32 part2 = 0;
+	char* Data;
+	s32 Length;
+};
 
-	for (auto i = lower; i <= upper; ++i)
+void day04(string lowerS, string upperS)
+{
+	byteArr arr;
+	arr.Length = 6;
+	arr.Data = reinterpret_cast<char*>(malloc(arr.Length + 1));
+	memcpy(arr.Data, lowerS.Data, arr.Length);
+	arr.Data[arr.Length] = 0;
+
+	 s32 part1 = 0;
+	 s32 part2 = 0;
+
+	while (!Equals(arr.Data, upperS.Data, arr.Length))
 	{
 		int pairCount = 0;
 		int perfectPairCount = 0;
 
 		bool increasing = true;
 
-		s32 numPrev = -1;
-
-		for (s32 j = 6; j > 1; --j)
+		// Check criterea
+		for (s32 j = 0; j < arr.Length - 1; ++j)
 		{
-			s32 mod0 = pow(10, j);
-			s32 num0 = i % mod0 / (mod0 / 10);
-
-			s32 mod1 = pow(10, j - 1);
-			s32 num1 = i % mod1 / (mod1 / 10);
+			s32 num0 = arr.Data[j];
+			s32 num1 = arr.Data[j + 1];
 
 			if (num0 == num1)
 			{
 				pairCount++;
-				
-				s32 numNext = -1;
-				if (j > 2)
-				{
-					s32 modNext = pow(10, j - 2);
-					numNext = i % modNext / (modNext / 10);
-				}
+
+				s32 numPrev = j > 0
+					? arr.Data[j - 1]
+					: -1;
+
+				s32 numNext = j < arr.Length - 2
+					? arr.Data[j + 2]
+					: -1;
 
 				if ((num0 != numPrev) && (num1 != numNext))
 					perfectPairCount++;
 			}
-			if (num0 > num1)
+			else if (num0 > num1)
 				increasing = false;
-
-			numPrev = num0;
 		}
 
 		if (pairCount > 0 && increasing)
@@ -46,6 +52,15 @@ void day04(s32 lower, s32 upper)
 
 		if (perfectPairCount > 0 && increasing)
 			part2++;
+
+		// Add one
+		for (s32 i = arr.Length - 1; i >= 0; i--)
+		{
+			arr.Data[i]++;
+			if (arr.Data[i] > '9')
+				arr.Data[i] = '0';
+			else break;
+		}
 	}
 
 	printf("[Day04][1] %i\n", part1);
