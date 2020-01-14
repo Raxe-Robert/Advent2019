@@ -16,7 +16,7 @@ struct Segment
 			s32 x;
 			s32 y;
 
-			s32 steps;
+			s32 startSteps;
 		};
 	};
 
@@ -28,7 +28,7 @@ struct Segment
 			s32 z;
 			s32 w;
 
-			s32 steps;
+			s32 endSteps;
 		};
 	};
 };
@@ -51,9 +51,7 @@ compareSegment(Segment* l, Segment* r)
 	auto lHor = l->start.y == l->end.y;
 	auto rHor = r->start.y == r->end.y;
 	
-	// lHor && rHor 
-	// !lHor && !rHor 
-	// Do not occur
+	// Both horizontal and vertical do not occur
 
 	Segment* hor = lHor ? l : r;
 	Segment* ver = !lHor ? l : r;
@@ -67,15 +65,9 @@ compareSegment(Segment* l, Segment* r)
 
 		auto lFirst = l->start.steps < l->end.steps ? l->start : l->end;
 		auto lSteps = lFirst.steps + absolute(lFirst.y - r->y);
-		printf("[l] steps: %i\n", lFirst.steps);
-		printf("[l] intersection: %i, first: %i, difference: %i\n", r->y, lFirst.y, absolute(lFirst.y - r->y));
-		printf("[l] accumulated steps: %i\n", lSteps);
 
 		auto rFirst = r->start.steps < r->end.steps ? r->start : r->end;
 		auto rSteps = rFirst.steps + absolute(rFirst.x - l->x);
-		printf("[r] steps: %i\n", rFirst.steps);
-		printf("[r] intersection: %i, first: %i, difference: %i\n", l->x, rFirst.x, absolute(rFirst.x - l->x));
-		printf("[r] accumulated steps: %i\n", rSteps);
 
 		printf("Total steps: %i\n\n", lSteps + rSteps);
 
@@ -164,6 +156,9 @@ void day03(string input)
 
 	// Second wire
 	previous = { 0, 0 };
+
+	steps = 0;
+
 	for (; i < input.Length; ++i)
 	{
 		Point current = previous;
@@ -218,7 +213,6 @@ void day03(string input)
 				previous = current;
 				i = j;
 				break;
-				
 			}
 		}
 	}
