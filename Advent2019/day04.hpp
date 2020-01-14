@@ -8,7 +8,7 @@ void day04(string lower, string upper)
 {
 	byteArr arr;
 	arr.Length = 6;
-	arr.Data = reinterpret_cast<char*>(malloc(arr.Length + 1));
+	arr.Data = reinterpret_cast<char*>(malloc(arr.Length + (s32)1));
 	memcpy(arr.Data, lower.Data, arr.Length);
 	arr.Data[arr.Length] = 0;
 
@@ -22,7 +22,7 @@ void day04(string lower, string upper)
 
 		bool increasing = true;
 
-		// Check criterea
+		// Check criteria
 		for (s32 j = 0; j < arr.Length - 1; ++j)
 		{
 			s32 num0 = arr.Data[j];
@@ -53,7 +53,6 @@ void day04(string lower, string upper)
 		if (perfectPairCount > 0 && increasing)
 			part2++;
 
-		// Add one
 		for (s32 i = arr.Length - 1; i >= 0; i--)
 		{
 			arr.Data[i]++;

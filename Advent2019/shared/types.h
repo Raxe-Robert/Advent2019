@@ -55,3 +55,17 @@ struct string
 		return this->Data[i];
 	}
 };
+
+struct intcodeArr
+{
+	s32* Data;
+	s32 Length;
+
+	inline s32& operator [] (s32 i)
+	{
+		if (i < 0 || i > this->Length)
+			throw std::invalid_argument("Index out of range");
+
+		return this->Data[i];
+	}
+};

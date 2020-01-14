@@ -156,7 +156,9 @@
     <ClInclude Include="day03.hpp" />
     <ClInclude Include="advent2019.h" />
     <ClInclude Include="day04.hpp" />
+    <ClInclude Include="day05.hpp" />
     <ClInclude Include="shared\file.hpp" />
+    <ClInclude Include="shared\intcode.hpp" />
     <ClInclude Include="shared\memory.hpp" />
     <ClInclude Include="shared\stopwatch.hpp" />
     <ClInclude Include="shared\string.hpp" />
@@ -167,6 +169,7 @@
     <Text Include="input\day01test.txt" />
     <Text Include="input\day02.txt" />
     <Text Include="input\day03.txt" />
+    <Text Include="input\day05.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

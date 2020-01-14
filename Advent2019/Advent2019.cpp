@@ -15,9 +15,12 @@ int main()
 	auto input_day03 = ReadAllText("./input/day03.txt");
 	stopwatch(day03, input_day03);
 
-	string day04_lower = String("168630", 6);
-	string day04_upper = String("718098", 6);
+	auto day04_lower = String("168630", 6);
+	auto day04_upper = String("718098", 6);
 	stopwatch(day04, day04_lower, day04_upper);
+
+	auto input_day05 = ReadAllText("./input/day05.txt");
+	stopwatch(day05, input_day05);
 
 	return 0;
 }

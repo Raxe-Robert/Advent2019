@@ -1,102 +1,25 @@
-
 void day02(string input)
 {
-	char* buffer = new char[4]{ 0, 0, 0, '\0' };
-	s32 buffer_length = 0;
-
-	s32* arr;
-	arr = reinterpret_cast<s32*>(malloc(sizeof(s32) * 1024));
-	s32 arr_length = 0;
-
-	for (s32 i = 0; i < input.Length; i++)
-	{
-		s32 c = input[i];
-		if (c == COMMA || c == EOF)
-		{
-			s32 num = atoi(buffer);
-			arr[arr_length] = num;
-			arr_length++;
-
-			memset(buffer, 0, buffer_length);
-			buffer_length = 0;
-
-			if (c == EOF)
-				break;
-		}
-		else
-		{
-			char num_part = (char)c;
-			buffer[buffer_length] = num_part;
-			buffer_length++;
-		}
-
-	}
-
-	s32* arr_copy;
-	arr_copy = reinterpret_cast<s32*>(malloc(sizeof(s32) * 1024 * 1024));
-	memset(arr_copy + sizeof(s32) * 1024, 0, sizeof(s32) * 1024);
-	memcpy(arr_copy, arr, sizeof(s32) * 1024);
+	intcodeArr arr = ReadIntcodeInput(input);
 
 	// "before running the program, replace position 1 with the value 12 and replace position 2 with the value 2."
-	arr_copy[1] = 12;
-	arr_copy[2] = 2;
+	arr[1] = 12;
+	arr[2] = 2;
 
-	for (auto i = 0; i < arr_length; i += 4)
-	{
-		auto method = arr_copy[i];
-		if (method == 99)
-		{
-			printf("[Day02][1] %i\n", arr_copy[0]);
-			break;
-		}
-
-		auto valPos = arr_copy[i + 1];
-		auto valPos2 = arr_copy[i + 2];
-		auto outputPos = arr_copy[i + 3];
-
-		auto val = arr_copy[valPos];
-		auto val2 = arr_copy[valPos2];
-
-		if (method == 1)
-			arr_copy[outputPos] = val + val2;
-		else if (method == 2)
-			arr_copy[outputPos] = val * val2;
-	}
+	auto val = IntcodeComputer(arr);
+	printf("[Day02][1] %i\n", val);
 
 	for (auto noun = 0; noun < 100; noun++)
 	for (auto verb = 0; verb < 100; verb++)
 	{
-		memset(arr_copy + sizeof(s32) * 1024, 0, sizeof(s32) * 1024);
-		memcpy(arr_copy, arr, sizeof(s32) * 1024);
+		arr[1] = noun;
+		arr[2] = verb;
 
-		arr_copy[1] = noun;
-		arr_copy[2] = verb;
-
-		for (auto i = 0; i < arr_length; i += 4)
+		auto val = IntcodeComputer(arr);
+		if (val == 19690720)
 		{
-			auto method = arr_copy[i];
-			if (method == 99)
-			{
-				if (arr_copy[0] == 19690720)
-				{
-					printf("[Day02][2] %i\n", 100 * noun + verb);
-					return;
-				}
-
-				break;
-			}
-
-			auto valPos = arr_copy[i + 1];
-			auto valPos2 = arr_copy[i + 2];
-			auto outputPos = arr_copy[i + 3];
-
-			auto val = arr_copy[valPos];
-			auto val2 = arr_copy[valPos2];
-
-			if (method == 1)
-				arr_copy[outputPos] = val + val2;
-			else if (method == 2)
-				arr_copy[outputPos] = val * val2;
+			printf("[Day02][2] %i\n", 100 * noun + verb);
+			return;
 		}
 	}
 }
