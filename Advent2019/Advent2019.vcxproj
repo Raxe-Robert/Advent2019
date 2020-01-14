@@ -158,6 +158,7 @@
     <ClInclude Include="day04.hpp" />
     <ClInclude Include="shared\file.hpp" />
     <ClInclude Include="shared\memory.hpp" />
+    <ClInclude Include="shared\stopwatch.hpp" />
     <ClInclude Include="shared\string.hpp" />
     <ClInclude Include="shared\types.h" />
   </ItemGroup>

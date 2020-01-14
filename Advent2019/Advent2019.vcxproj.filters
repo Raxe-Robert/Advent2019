@@ -47,6 +47,9 @@
     <ClInclude Include="day04.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="shared\stopwatch.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="input\day01.txt" />
