@@ -155,6 +155,7 @@
     <ClInclude Include="day02.hpp" />
     <ClInclude Include="day03.hpp" />
     <ClInclude Include="advent2019.h" />
+    <ClInclude Include="day04.hpp" />
     <ClInclude Include="shared\file.hpp" />
     <ClInclude Include="shared\memory.hpp" />
     <ClInclude Include="shared\string.hpp" />
