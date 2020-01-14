@@ -45,38 +45,6 @@ inRange(s32 min, s32 max, s32 val)
 	return val >= min && val <= max;
 }
 
-inline bool
-compareSegment(Segment* l, Segment* r)
-{
-	auto lHor = l->start.y == l->end.y;
-	auto rHor = r->start.y == r->end.y;
-	
-	// Both horizontal and vertical do not occur
-
-	Segment* hor = lHor ? l : r;
-	Segment* ver = !lHor ? l : r;
-
-	bool xInRange = inRange(hor->start.x, hor->end.x, ver->x);
-	bool yInRange = inRange(ver->start.y, ver->end.y, hor->y);
-
-	if (xInRange && yInRange)
-	{
-		printf("Manhattan Distance: %i\n", absolute(ver->x) + absolute(hor->y));
-
-		auto lFirst = l->start.steps < l->end.steps ? l->start : l->end;
-		auto lSteps = lFirst.steps + absolute(lFirst.y - r->y);
-
-		auto rFirst = r->start.steps < r->end.steps ? r->start : r->end;
-		auto rSteps = rFirst.steps + absolute(rFirst.x - l->x);
-
-		printf("Total steps: %i\n\n", lSteps + rSteps);
-
-		return true;
-	}
-
-	return false;
-}
-
 void day03(string input)
 {
 	auto segments = reinterpret_cast<Segment*>(malloc(sizeof(Segment) * 1024));
@@ -90,6 +58,9 @@ void day03(string input)
 	auto firstLine = true;
 	auto i = 0;
 	auto steps = 0;
+
+	auto part1 = S32MAX;
+	auto part2 = S32MAX;
 
 	for (; firstLine; ++i)
 	{
@@ -152,8 +123,6 @@ void day03(string input)
 		}
 	}
 
-	printf("---------------\n");
-
 	// Second wire
 	previous = { 0, 0 };
 
@@ -207,8 +176,42 @@ void day03(string input)
 				}
 
 				// Compare against all other segments
+				// Both horizontal and both vertical do not occur
 				for (auto k = 0; k < segments_length; k++)
-					compareSegment(segment, &segments[k]);
+				{
+					auto l = segment;
+					auto r = &segments[k];
+
+					auto lHor = l->start.y == l->end.y;
+					auto rHor = r->start.y == r->end.y;
+
+					Segment* hor = lHor ? l : r;
+					Segment* ver = !lHor ? l : r;
+
+					// Ignore origin
+					if (ver->x == 0 && hor->y == 0)
+						continue;
+
+					bool xInRange = inRange(hor->start.x, hor->end.x, ver->x);
+					bool yInRange = inRange(ver->start.y, ver->end.y, hor->y);
+
+					if (xInRange && yInRange)
+					{
+						auto manhattanDistance = absolute(ver->x) + absolute(hor->y);
+						if (manhattanDistance < part1)
+							part1 = manhattanDistance;
+
+						auto lFirst = l->start.steps < l->end.steps ? l->start : l->end;
+						auto lSteps = lFirst.steps + absolute(lFirst.y - r->y);
+
+						auto rFirst = r->start.steps < r->end.steps ? r->start : r->end;
+						auto rSteps = rFirst.steps + absolute(rFirst.x - l->x);
+
+						auto totalSteps = lSteps + rSteps;
+						if (totalSteps < part2)
+							part2 = totalSteps;
+					}
+				}
 				
 				previous = current;
 				i = j;
@@ -216,5 +219,9 @@ void day03(string input)
 			}
 		}
 	}
+
+	printf("[Day03][1] %i\n", part1);
+	printf("[Day03][2] %i\n", part2);
+
 	free(segments);
 }

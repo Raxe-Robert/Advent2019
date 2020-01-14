@@ -4,18 +4,18 @@ struct byteArr
 	s32 Length;
 };
 
-void day04(string lowerS, string upperS)
+void day04(string lower, string upper)
 {
 	byteArr arr;
 	arr.Length = 6;
 	arr.Data = reinterpret_cast<char*>(malloc(arr.Length + 1));
-	memcpy(arr.Data, lowerS.Data, arr.Length);
+	memcpy(arr.Data, lower.Data, arr.Length);
 	arr.Data[arr.Length] = 0;
 
 	 s32 part1 = 0;
 	 s32 part2 = 0;
 
-	while (!Equals(arr.Data, upperS.Data, arr.Length))
+	while (!Equals(arr.Data, upper.Data, arr.Length))
 	{
 		int pairCount = 0;
 		int perfectPairCount = 0;

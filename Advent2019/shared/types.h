@@ -1,3 +1,4 @@
+//Base types
 typedef int8_t s8;
 typedef int16_t s16;
 typedef int32_t s32;
@@ -12,6 +13,25 @@ typedef double r64;
 typedef intptr_t intptr;
 typedef uintptr_t uintptr;
 typedef unsigned char uchar;
+
+// Constants
+#define PI 3.141592653589793f
+#define TAU 6.283185307179586f
+#define DEG2RAD 0.017453292519943295f
+#define RAD2DEG 57.29577951308232f
+#define EPSILON 0.00001f
+#define S8MIN  -128
+#define S16MIN -32768
+#define S32MIN -2147483648
+#define S64MIN -9223372036854775808L
+#define S8MAX  127
+#define S16MAX 32767
+#define S32MAX 2147483647
+#define S64MAX 9223372036854775807L
+#define U8MAX  255
+#define U16MAX 65535
+#define U32MAX 4294967295U
+#define U64MAX 18446744073709551615UL
 
 constexpr s32 COMMA = 44;
 
