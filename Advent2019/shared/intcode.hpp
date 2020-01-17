@@ -1,6 +1,17 @@
 constexpr s32 UNICODE_NUMBER_OFFSET = 48;
 
-enum instruction_type : s32 {
+constexpr bool debug_output = false;
+
+template<typename... Args>
+inline
+void debug_log(const char* message, Args... args)
+{
+#if debug_output
+	printf(message, args...);
+#endif
+}
+
+enum class instruction_type : s32 {
 	add = 1,
 	multiply = 2,
 	user_input = 3,
@@ -8,7 +19,7 @@ enum instruction_type : s32 {
 	terminate_program = 99
 };
 
-enum parameter_mode : s32 {
+enum class parameter_mode : s32 {
 	position = 0,
 	immediate = 1
 };
@@ -23,12 +34,15 @@ s32 IntcodeComputer(const intcodeArr inputArr)
 	memset(arr.Data, 0, sizeof(s32) * arr.Length);
 	memcpy(arr.Data, inputArr.Data, sizeof(s32) * inputArr.Length);
 
-	char instruction[(instruction_type)64];
+	char instruction[sizeof(instruction_type) * 64];
 	instruction_type opcode;
-	s32 parameterModes[(parameter_mode)64];
+	parameter_mode parameterModes[sizeof(parameter_mode) * 64];
 
 	for (auto i = 0; i < arr.Length;)
 	{
+		// Reset memory
+		memset(parameterModes, 0, (s32)64);
+
 		// Read instruction
 		sprintf(instruction, "%i", arr[i]);
 		s32 instruction_length = 0;
@@ -54,15 +68,12 @@ s32 IntcodeComputer(const intcodeArr inputArr)
 			parameterModes[j] = parameter_mode(val - UNICODE_NUMBER_OFFSET);
 		}
 
-		//printf("instruction length: %i\n", instruction_length);
-		//printf("opcode: %i\n", opcode);
+		debug_log(">>> %s = opcode: %i\n", instruction, opcode);
 
-		printf(">>> %s = opcode: %i\n", instruction, opcode);
-
-		printf("[modes]");
+		debug_log("[modes]");
 		for (s32 j = 0; j < parameterModes_length; ++j)
-			printf(" %i", parameterModes[j]);
-		printf("\n");
+			debug_log(" %i", parameterModes[j]);
+		debug_log("\n");
 
 		switch (opcode)
 		{
@@ -73,12 +84,12 @@ s32 IntcodeComputer(const intcodeArr inputArr)
 				s32 parameter0 = arr[i + 1];
 				s32 parameter1 = arr[i + 2];
 				s32 parameter2 = arr[i + 3]; // Parameters that an instruction writes to will never be in imediate mode
-				printf("[param] %i, %i, %i\n", parameter0, parameter1, parameter2);
+				debug_log("[param] %i, %i, %i\n", parameter0, parameter1, parameter2);
 
-				auto val0 = parameterModes[0] == position ? arr[parameter0] : parameter0;
-				auto val1 = parameterModes[1] == position ? arr[parameter1] : parameter1;
+				auto val0 = parameterModes[0] == parameter_mode::position ? arr[parameter0] : parameter0;
+				auto val1 = parameterModes[1] == parameter_mode::position ? arr[parameter1] : parameter1;
 
-				printf("[wrtng] val: '%i' to position: '%i'\n", val0 + val1, parameter2);
+				debug_log("[wrtng] val: '%i' to position: '%i'\n", val0 + val1, parameter2);
 				arr[parameter2] = val0 + val1;
 
 				i += 4;
@@ -89,12 +100,12 @@ s32 IntcodeComputer(const intcodeArr inputArr)
 				s32 parameter0 = arr[i + 1];
 				s32 parameter1 = arr[i + 2];
 				s32 parameter2 = arr[i + 3]; // Parameters that an instruction writes to will never be in imediate mode
-				printf("[param] %i, %i, %i\n", parameter0, parameter1, parameter2);
+				debug_log("[param] %i, %i, %i\n", parameter0, parameter1, parameter2);
 
-				auto val0 = parameterModes[0] == position ? arr[parameter0] : parameter0;
-				auto val1 = parameterModes[1] == position ? arr[parameter1] : parameter1;
+				auto val0 = parameterModes[0] == parameter_mode::position ? arr[parameter0] : parameter0;
+				auto val1 = parameterModes[1] == parameter_mode::position ? arr[parameter1] : parameter1;
 
-				printf("[wrtng] val: '%i' to position: '%i'\n", val0 * val1, parameter2);
+				debug_log("[wrtng] val: '%i' to position: '%i'\n", val0 * val1, parameter2);
 				arr[parameter2] = val0 * val1;
 
 				i += 4;
@@ -103,13 +114,17 @@ s32 IntcodeComputer(const intcodeArr inputArr)
 			case instruction_type::user_input:
 			{
 				s32 parameter0 = arr[i + 1]; // Parameters that an instruction writes to will never be in imediate mode
-				printf("[param] %i\n", parameter0);
+				debug_log("[param] %i\n", parameter0);
 
 				s32 inputVal;
 				printf("[input] Enter ID: ");
-				scanf("%d", &inputVal);
+				if (scanf("%d", &inputVal) == NULL)
+				{
+					printf("[Excep] Invalid input", opcode);
+					return -1;
+				}
 
-				printf("[wrtng] val: '%i' to position: '%i'\n", inputVal, parameter0);
+				debug_log("[wrtng] val: '%i' to position: '%i'\n", inputVal, parameter0);
 				arr[parameter0] = inputVal;
 
 				i += 2;
@@ -118,10 +133,9 @@ s32 IntcodeComputer(const intcodeArr inputArr)
 			case instruction_type::output:
 			{
 				s32 parameter0 = arr[i + 1];
-				printf("[param] %i\n", parameter0);
+				debug_log("[param] %i\n", parameter0);
 
-				s32 val0 = parameterModes[0] == position ? arr[parameter0] : parameter0;
-
+				s32 val0 = parameterModes[0] == parameter_mode::position ? arr[parameter0] : parameter0;
 				printf("[outpt] %i\n", val0);
 
 				i += 2; //?
@@ -129,14 +143,11 @@ s32 IntcodeComputer(const intcodeArr inputArr)
 			}
 			default:
 			{
-				printf("[Excep] Opcode %i does not exist", opcode);
+				debug_log("[Excep] Opcode %i does not exist", opcode);
 				return -1;
 			}
 		}
-		printf("\n");
-
-		// Reset memory
-		memset(parameterModes, 0, (s32)64);
+		debug_log("\n");
 	}
 }
 
