@@ -1,21 +1,56 @@
 constexpr s32 UNICODE_NUMBER_OFFSET = 48;
 
-constexpr bool debug_output = false;
+constexpr bool debug_output = true;
 
 template<typename... Args>
 inline
 void debug_log(const char* message, Args... args)
 {
-#if debug_output
+#if !debug_output
 	printf(message, args...);
 #endif
 }
 
 enum class instruction_type : s32 {
+	/*
+		Adds together numbers read from two positions and stores the result in a third position. The three integers immediately after the 
+		opcode tell you these three positions - the first two indicate the positions from which you should read the input values, and the 
+		third indicates the position at which the output should be stored.
+	*/
 	add = 1,
+	/*
+		Works exactly like opcode 1, except it multiplies the two inputs instead of adding them. 
+		Again, the three integers after the opcode indicate where the inputs and outputs are, not their values.
+	*/
 	multiply = 2,
+	/*
+		Takes a single integer as input and saves it to the position given by its only parameter. 
+		For example, the instruction 3,50 would take an input value and store it at address 50.
+	*/
 	user_input = 3,
+	/*
+		Outputs the value of its only parameter. For example, the instruction 4,50 would output the value at address 50.
+	*/
 	output = 4,
+	/*
+		If the first parameter is non-zero, it sets the instruction pointer to the value from the second parameter. Otherwise, it does nothing.
+	*/
+	jump_if_true = 5,
+	/*
+		If the first parameter is zero, it sets the instruction pointer to the value from the second parameter. Otherwise, it does nothing.	
+	*/
+	jump_if_false = 6,
+	/*
+		If the first parameter is less than the second parameter, it stores 1 in the position given by the third parameter. Otherwise, it stores 0.
+	*/
+	less_than = 7,
+	/*
+		If the first parameter is equal to the second parameter, it stores 1 in the position given by the third parameter. Otherwise, it stores 0.
+	*/
+	equals = 8,
+	/*
+		Means that the program is finished and should immediately halt.
+	*/
 	terminate_program = 99
 };
 
@@ -120,7 +155,7 @@ s32 IntcodeComputer(const intcodeArr inputArr)
 				printf("[input] Enter ID: ");
 				if (scanf("%d", &inputVal) == NULL)
 				{
-					printf("[Excep] Invalid input", opcode);
+					printf("[Excep] Invalid input");
 					return -1;
 				}
 
@@ -138,7 +173,67 @@ s32 IntcodeComputer(const intcodeArr inputArr)
 				s32 val0 = parameterModes[0] == parameter_mode::position ? arr[parameter0] : parameter0;
 				printf("[outpt] %i\n", val0);
 
-				i += 2; //?
+				i += 2;
+				break;
+			}
+			case instruction_type::jump_if_true:
+			{
+				s32 parameter0 = arr[i + 1];
+				s32 val0 = parameterModes[0] == parameter_mode::position ? arr[parameter0] : parameter0;
+				if (val0 != 0)
+				{
+					s32 parameter1 = arr[i + 2];
+					s32 val1 = parameterModes[1] == parameter_mode::position ? arr[parameter1] : parameter1;
+
+					i = val1;
+				}
+				else
+					i += 3;
+
+				break;
+			}
+			case instruction_type::jump_if_false:
+			{
+				s32 parameter0 = arr[i + 1];
+				s32 val0 = parameterModes[0] == parameter_mode::position ? arr[parameter0] : parameter0;
+				if (val0 == 0)
+				{
+					s32 parameter1 = arr[i + 2];
+					s32 val1 = parameterModes[1] == parameter_mode::position ? arr[parameter1] : parameter1;
+
+					i = val1;
+				}
+				else
+					i += 3;
+
+				break;
+			}
+			case instruction_type::less_than:
+			{
+				s32 parameter0 = arr[i + 1];
+				s32 parameter1 = arr[i + 2];
+				s32 parameter2 = arr[i + 3]; // Parameters that an instruction writes to will never be in imediate mode
+
+				s32 val0 = parameterModes[0] == parameter_mode::position ? arr[parameter0] : parameter0;
+				s32 val1 = parameterModes[1] == parameter_mode::position ? arr[parameter1] : parameter1;
+
+				arr[i] = val0 < val1 ? 1 : 0;
+					
+				i += 3;
+				break;
+			}
+			case instruction_type::equals:
+			{
+				s32 parameter0 = arr[i + 1];
+				s32 parameter1 = arr[i + 2];
+				s32 parameter2 = arr[i + 3]; // Parameters that an instruction writes to will never be in imediate mode
+
+				s32 val0 = parameterModes[0] == parameter_mode::position ? arr[parameter0] : parameter0;
+				s32 val1 = parameterModes[1] == parameter_mode::position ? arr[parameter1] : parameter1;
+
+				arr[i] = val0 == val1 ? 1 : 0;
+				
+				i += 3;
 				break;
 			}
 			default:
@@ -149,6 +244,7 @@ s32 IntcodeComputer(const intcodeArr inputArr)
 		}
 		debug_log("\n");
 	}
+	return 0;
 }
 
 intcodeArr ReadIntcodeInput(string input)
