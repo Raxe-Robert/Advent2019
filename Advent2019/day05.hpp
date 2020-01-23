@@ -1,6 +1,6 @@
 void day05(string input)
 {
-	intcodeArr arr = ReadIntcodeInput(input);
+	s32_array arr = ReadIntcodeInput(input);
 
 	printf("[Day05][1] Input should be 1\n");
 	s32* userInput1 = new s32[2]{ 1, '\0' };

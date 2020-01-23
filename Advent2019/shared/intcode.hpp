@@ -28,7 +28,7 @@ enum class parameter_mode : s32 {
 };
 
 inline
-s32 ReadParameter(const intcodeArr& arr, s32 i, parameter_mode paramMode)
+s32 ReadParameter(const s32_array& arr, s32 i, parameter_mode paramMode)
 {
 	switch (paramMode)
 	{
@@ -50,9 +50,9 @@ s32 ReadParameter(const intcodeArr& arr, s32 i, parameter_mode paramMode)
 }
 
 inline
-s32 IntcodeComputer(const intcodeArr inputArr, s32* userInput = new s32[1]{ '\0' })
+s32 IntcodeComputer(const s32_array inputArr, s32* userInput = new s32[1]{ '\0' })
 {
-	intcodeArr arr;
+	s32_array arr;
 	arr.Length = inputArr.Length * inputArr.Length;
 	arr.Data = reinterpret_cast<s32*>(malloc(sizeof(s32) * arr.Length));
 
@@ -203,12 +203,12 @@ s32 IntcodeComputer(const intcodeArr inputArr, s32* userInput = new s32[1]{ '\0'
 	return 0;
 }
 
-intcodeArr ReadIntcodeInput(string input)
+s32_array ReadIntcodeInput(string input)
 {
 	char* buffer = new char[4]{ 0, 0, 0, '\0' };
 	s32 buffer_length = 0;
 
-	intcodeArr arr;
+	s32_array arr;
 	arr.Length = 0;
 	arr.Data = reinterpret_cast<s32*>(malloc(sizeof(s32) * (1024 + 1)));
 

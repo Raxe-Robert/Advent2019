@@ -14,3 +14,4 @@
 #include "day03.hpp"
 #include "day04.hpp"
 #include "day05.hpp"
+#include "day07.hpp"

@@ -6,6 +6,7 @@ int main()
 {
 	printf("Advent of Code 2019\n\n");
 
+	/* 
 	auto input_day01 = ReadAllText("./input/day01.txt");
 	stopwatch(day01, input_day01);
 
@@ -21,6 +22,11 @@ int main()
 
 	auto input_day05 = ReadAllText("./input/day05.txt");
 	stopwatch(day05, input_day05);
+	*/
+	// TODO: day06
+
+	auto input_day07 = ReadAllText("./input/day07.txt");
+	stopwatch(day07, input_day07);
 
 	return 0;
 }

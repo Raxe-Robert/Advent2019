@@ -56,7 +56,7 @@ struct string
 	}
 };
 
-struct intcodeArr
+struct s32_array
 {
 	s32* Data;
 	s32 Length;

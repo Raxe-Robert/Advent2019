@@ -163,6 +163,7 @@
     <ClInclude Include="shared\stopwatch.hpp" />
     <ClInclude Include="shared\string.hpp" />
     <ClInclude Include="shared\types.h" />
+    <ClInclude Include="day07.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="input\day01.txt" />
@@ -170,6 +171,7 @@
     <Text Include="input\day02.txt" />
     <Text Include="input\day03.txt" />
     <Text Include="input\day05.txt" />
+    <Text Include="input\day07.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
