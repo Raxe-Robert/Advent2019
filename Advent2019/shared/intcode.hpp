@@ -43,14 +43,14 @@ s32 ReadParameter(const intcodeArr& arr, s32 i, parameter_mode paramMode)
 		}
 		default:
 		{
-			printf("[Excep] Parameter mode %s does not exist", paramMode);
+			printf("[Excep] Parameter mode %i does not exist", paramMode);
 			return -1;
 		}
 	}
 }
 
 inline
-s32 IntcodeComputer(const intcodeArr inputArr)
+s32 IntcodeComputer(const intcodeArr inputArr, s32* userInput = new s32[1]{ '\0' })
 {
 	intcodeArr arr;
 	arr.Length = inputArr.Length * inputArr.Length;
@@ -125,10 +125,19 @@ s32 IntcodeComputer(const intcodeArr inputArr)
 
 				s32 inputVal;
 				printf("[input] Enter ID: ");
-				if (scanf("%d", &inputVal) == NULL)
+				if (*userInput == '\0')
 				{
-					printf("[Excep] Invalid input");
-					return -1;
+					if (scanf("%d", &inputVal) == NULL)
+					{
+						printf("[Excep] Invalid input");
+						return -1;
+					}
+				}
+				else
+				{
+					inputVal = *userInput;
+					userInput++;
+					printf("%i\n", inputVal);
 				}
 				
 				arr[param1] = inputVal;
