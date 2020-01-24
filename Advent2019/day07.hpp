@@ -55,17 +55,13 @@ void printBits(u32 n)
 	printf("\n");
 }
 
-void recursive_combination(s32_array& comb, const u32 mask)
+void recursive_combination(s32_array& comb, const u32 mask, void(*callback)(s32_array))
 {
 	auto depth = countSetBits(mask);
 	auto remaining = comb.Length - depth;
 
 	if (remaining == 0)
-	{
-		for (auto i = 0; i < comb.Length; i++)
-			printf("%i ", comb.Data[i]);
-		printf("\n");
-	}
+		callback(comb);
 	else
 	{
 		for (s32 i = 0; i < remaining; i++)
@@ -76,27 +72,46 @@ void recursive_combination(s32_array& comb, const u32 mask)
 			comb.Data[depth] = bitIndex;
 			maskCopy = setBit(maskCopy, bitIndex);
 
-			recursive_combination(comb, maskCopy);
+			recursive_combination(comb, maskCopy, *callback);
 		}
 	}
 }
 
+s32_array intcodeSequence;
+s32 biggestOutput = 0;
+
+void execute(s32_array combination)
+{
+	s32 output = 0;
+
+	for (auto i = 0; i < combination.Length; i++)
+	{
+		s32 phaseSetting = combination.Data[i];
+
+		s32_array intcodeInput;
+		intcodeInput.Length = 2;
+		intcodeInput.Data = new s32[intcodeInput.Length]{ phaseSetting, output };
+		
+		auto result = IntcodeComputer(intcodeSequence, intcodeInput);
+		output = result.OutputArr[result.OutputArr.Length - 1];
+	}
+
+	if (output > biggestOutput)
+		biggestOutput = output;
+}
+
 void day07(string input)
 {
+	intcodeSequence = ReadIntcodeInput(input);
+
 	u32 mask = 0x00;
 	s32 phase_count = 5;
 
-	//mask = setBit(mask, 2);
-	//printBits(mask);
-	//printf("Index %i\n", getUnsetBit(mask, 0));
-	//printf("Index %i\n", getUnsetBit(mask, 1));
-	//printf("Index %i\n", getUnsetBit(mask, 2));
-	//printf("Index %i\n", getUnsetBit(mask, 3));
-
 	s32_array iterable;
-	iterable.Length = 5;
-	iterable.Data = new s32[iterable.Length + 1]{ 0, 1, 2, 3, 4 };
-	iterable.Data[iterable.Length] = '\0';
+	iterable.Length = phase_count;
+	iterable.Data = new s32[iterable.Length]{ 0, 1, 2, 3, 4 };
 	
-	recursive_combination(iterable, mask);
+	recursive_combination(iterable, mask, execute);
+
+	printf("[Day07][1] %i\n", biggestOutput);
 }

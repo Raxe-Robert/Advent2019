@@ -60,6 +60,7 @@ struct s32_array
 {
 	s32* Data;
 	s32 Length;
+	s32 Capacity;
 
 	inline s32& operator [] (s32 i)
 	{

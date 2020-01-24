@@ -27,6 +27,12 @@ enum class parameter_mode : s32 {
 	immediate = 1
 };
 
+struct intcode_result
+{
+	s32 StatusCode;
+	s32_array OutputArr;
+};
+
 inline
 s32 ReadParameter(const s32_array& arr, s32 i, parameter_mode paramMode)
 {
@@ -50,7 +56,7 @@ s32 ReadParameter(const s32_array& arr, s32 i, parameter_mode paramMode)
 }
 
 inline
-s32 IntcodeComputer(const s32_array inputArr, s32* userInput = new s32[1]{ '\0' })
+intcode_result IntcodeComputer(const s32_array inputArr, s32_array userInput = { 0, 0 })
 {
 	s32_array arr;
 	arr.Length = inputArr.Length * inputArr.Length;
@@ -62,6 +68,14 @@ s32 IntcodeComputer(const s32_array inputArr, s32* userInput = new s32[1]{ '\0' 
 	char instruction[sizeof(instruction_type) * 64];
 	instruction_type opcode;
 	parameter_mode paramModes[sizeof(parameter_mode) * 64];
+
+	s32 userInputIndex = 0;
+
+	intcode_result result;
+	result.StatusCode = -1;
+	result.OutputArr.Capacity = 20;
+	result.OutputArr.Data = new s32[result.OutputArr.Capacity];
+	result.OutputArr.Length = 0;
 
 	for (auto i = 0; i < arr.Length;)
 	{
@@ -96,7 +110,10 @@ s32 IntcodeComputer(const s32_array inputArr, s32* userInput = new s32[1]{ '\0' 
 		switch (opcode)
 		{
 			case instruction_type::terminate_program:
-				return arr[0];
+			{
+				result.StatusCode = arr[0];
+				return result;
+			}				
 			case instruction_type::add:
 			{
 				s32 param1 = ReadParameter(arr, i + 1, paramModes[0]);
@@ -124,20 +141,22 @@ s32 IntcodeComputer(const s32_array inputArr, s32* userInput = new s32[1]{ '\0' 
 				s32 param1 = arr[i + 1]; // Parameters that an instruction writes to will never be in immediate mode
 
 				s32 inputVal;
-				printf("[input] Enter ID: ");
-				if (*userInput == '\0')
+				if (userInput.Length == 0 || userInputIndex >= userInput.Length)
 				{
+					printf("[input] Enter Value: ");
 					if (scanf("%d", &inputVal) == NULL)
 					{
-						printf("[Excep] Invalid input");
-						return -1;
+						printf("[Excep] Invalid input\n");
+
+						result.StatusCode = -1;
+						return result;
 					}
 				}
 				else
 				{
-					inputVal = *userInput;
-					userInput++;
-					printf("%i\n", inputVal);
+					inputVal = userInput[userInputIndex];
+					userInputIndex++;
+					//printf("%i\n", inputVal);
 				}
 				
 				arr[param1] = inputVal;
@@ -148,7 +167,10 @@ s32 IntcodeComputer(const s32_array inputArr, s32* userInput = new s32[1]{ '\0' 
 			case instruction_type::output:
 			{
 				s32 param1 = ReadParameter(arr, i + 1, paramModes[0]);
-				printf("[outpt] %i\n", param1);
+				//printf("[outpt] %i\n", param1);
+
+				result.OutputArr[result.OutputArr.Length] = param1;
+				result.OutputArr.Length++;
 
 				i += 2;
 				break;
@@ -195,12 +217,16 @@ s32 IntcodeComputer(const s32_array inputArr, s32* userInput = new s32[1]{ '\0' 
 			}
 			default:
 			{
-				printf("[Excep] Opcode %i does not exist", opcode);
-				return -1;
+				printf("[Excep] Opcode %i does not exist\n", opcode);
+
+				result.StatusCode = -1;
+				return result;
 			}
 		}
 	}
-	return 0;
+
+	result.StatusCode = 0;
+	return result;
 }
 
 s32_array ReadIntcodeInput(string input)

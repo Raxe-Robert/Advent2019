@@ -6,8 +6,8 @@ void day02(string input)
 	arr[1] = 12;
 	arr[2] = 2;
 
-	auto val = IntcodeComputer(arr);
-	printf("[Day02][1] %i\n", val);
+	auto result = IntcodeComputer(arr);
+	printf("[Day02][1] %i\n", result.StatusCode);
 
 	for (auto noun = 0; noun < 100; noun++)
 	for (auto verb = 0; verb < 100; verb++)
@@ -15,8 +15,8 @@ void day02(string input)
 		arr[1] = noun;
 		arr[2] = verb;
 
-		auto val = IntcodeComputer(arr);
-		if (val == 19690720)
+		result = IntcodeComputer(arr);
+		if (result.StatusCode == 19690720)
 		{
 			printf("[Day02][2] %i\n", 100 * noun + verb);
 			return;
