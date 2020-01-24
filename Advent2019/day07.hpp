@@ -5,6 +5,12 @@ u32 setBit(u32 data, u32 pos)
 }
 
 inline
+u32 unsetBit(u32 data, u32 pos)
+{
+	return data & (~(0 << pos));
+}
+
+inline
 u32 getBit(u32 data, u32 pos)
 {
 	return data & (1 << pos) ? 1 : 0;
@@ -36,7 +42,7 @@ s32 getUnsetBit(u32 n, s32 skip)
 		index++;
 		n >>= 1;
 	}
-	return index;
+	return index + skip;
 }
 
 void printBits(u32 n)
@@ -51,9 +57,8 @@ void printBits(u32 n)
 
 void recursive_combination(s32_array& comb, const u32 mask)
 {
-	auto maskCopy = mask;
-	auto depth = countSetBits(maskCopy);
-	auto remaining = depth - comb.Length;
+	auto depth = countSetBits(mask);
+	auto remaining = comb.Length - depth;
 
 	if (remaining == 0)
 	{
@@ -63,104 +68,35 @@ void recursive_combination(s32_array& comb, const u32 mask)
 	}
 	else
 	{
-		for (s32 i = 0; i < depth; i++)
+		for (s32 i = 0; i < remaining; i++)
 		{
-			comb.Data[depth] = 
-			setBit(maskCopy, 1);
+			auto maskCopy = mask;
+			auto bitIndex = getUnsetBit(maskCopy, i);
+
+			comb.Data[depth] = bitIndex;
+			maskCopy = setBit(maskCopy, bitIndex);
 
 			recursive_combination(comb, maskCopy);
 		}
 	}
-
 }
 
 void day07(string input)
 {
-
-	/*
-
-		3 : 3 * 2 * 1 = 6
-		0 1 2 
-		0 2 1
-		1 0 2	
-		1 2 0
-		2 0 1
-		2 1 0
-		
-		4 : 4 * 3 * 2 * 1 = 24
-		1 2 3 4
-		1 2 4 3
-		1 3 2 4
-		1 3 4 2
-		1 4 2 3
-		1 4 3 2
-
-		2 1 3 4
-		2 1 4 3
-		2 3 1 4
-		2 3 4 1
-		2 4 1 3
-		2 4 3 1
-
-		3 1 2 4
-		3 1 4 2
-		3 2 1 4
-		3 2 4 1
-		3 4 1 2
-		3 4 2 1
-
-		4 1 2 3
-		4 1 3 2
-		4 2 1 3
-		4 2 3 1
-		4 3 1 2
-		4 3 2 1
-
-
-
-		1 2 3 4  
- 		2 1 3 4  0 1
-		3 1 2 4  0 2
-		4 1 2 3  1 3
-				 
-		1 2 4 3  
-		2 1 4 3  0 1 
-		3 1 4 2  0 3
-		4 1 3 2  0 2
-
-		1 3 2 4  
-		2 3 1 4  0 2
-		3 2 1 4  0 1
-		4 2 1 3  0 3
-
-		1 3 4 2  
-		2 3 4 1  
-		3 2 4 1
-		4 2 3 1
-		
-		1 4 2 3
-		2 4 1 3
-		3 4 1 2
-		4 3 1 2
-
-		1 4 3 2
-		2 4 3 1
-		3 4 2 1
-		4 3 2 1
-	
-	*/
 	u32 mask = 0x00;
 	s32 phase_count = 5;
 
-	mask = setBit(mask, 2);
-	printBits(mask);
-	auto val = getUnsetBit(mask, 1);
-	printf("Index %i\n", val);
+	//mask = setBit(mask, 2);
+	//printBits(mask);
+	//printf("Index %i\n", getUnsetBit(mask, 0));
+	//printf("Index %i\n", getUnsetBit(mask, 1));
+	//printf("Index %i\n", getUnsetBit(mask, 2));
+	//printf("Index %i\n", getUnsetBit(mask, 3));
 
 	s32_array iterable;
 	iterable.Length = 5;
 	iterable.Data = new s32[iterable.Length + 1]{ 0, 1, 2, 3, 4 };
 	iterable.Data[iterable.Length] = '\0';
 	
-	//recursive_combination(iterable, mask);
+	recursive_combination(iterable, mask);
 }
