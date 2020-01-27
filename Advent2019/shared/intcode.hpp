@@ -33,7 +33,6 @@ struct intcode_result
 	s32_array OutputArr;
 };
 
-inline
 s32 ReadParameter(const s32_array& arr, s32 i, parameter_mode paramMode)
 {
 	switch (paramMode)
@@ -55,7 +54,6 @@ s32 ReadParameter(const s32_array& arr, s32 i, parameter_mode paramMode)
 	}
 }
 
-inline
 intcode_result IntcodeComputer(const s32_array inputArr, s32_array userInput = { 0, 0 })
 {
 	s32_array arr;

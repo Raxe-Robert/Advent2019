@@ -3,6 +3,7 @@
 #include <stdio.h>
 
 #include "shared/types.h"
+#include "shared/math.hpp"
 #include "shared/memory.hpp"
 #include "shared/file.hpp"
 #include "shared/string.hpp"
