@@ -54,7 +54,7 @@ s32 ReadParameter(const s32_array& arr, s32 i, parameter_mode paramMode)
 	}
 }
 
-intcode_result IntcodeComputer(const s32_array inputArr, s32_array userInput = { 0, 0 })
+intcode_result solveIntcodeSequence(const s32_array inputArr, s32_array userInput = { 0, 0 })
 {
 	s32_array arr;
 	arr.Length = inputArr.Length * inputArr.Length;
@@ -227,7 +227,7 @@ intcode_result IntcodeComputer(const s32_array inputArr, s32_array userInput = {
 	return result;
 }
 
-s32_array ReadIntcodeInput(string input)
+s32_array readIntcodeInput(string input)
 {
 	char* buffer = new char[4]{ 0, 0, 0, '\0' };
 	s32 buffer_length = 0;
